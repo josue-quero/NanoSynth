@@ -1,0 +1,133 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{D56DE2B8-2583-3478-ADE8-F292F5B0C5B5}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.19041.0</WindowsTargetPlatformVersion>
+    <Platform>x64</Platform>
+    <ProjectName>cmake_VST_modules</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <AdditionalIncludeDirectories>R:\VST_SDK\vst3sdk;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <AdditionalIncludeDirectories>R:\VST_SDK\vst3sdk;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="R:\VST_SDK\vst3sdk\CMakeLists.txt">
+      <UseUtf8Encoding>Always</UseUtf8Encoding>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule R:/VST_SDK/vst3sdk/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+"R:\Program Files\CMake\bin\cmake.exe" -SR:/VST_SDK/my_plugins/NanoSynth -BR:/VST_SDK/my_plugins/NanoSynth/build --check-stamp-file R:/VST_SDK/my_plugins/NanoSynth/build/vst3sdk/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">R:\Program Files\CMake\share\cmake-3.24\Modules\CMakeParseArguments.cmake;R:\Program Files\CMake\share\cmake-3.24\Modules\CMakePrintHelpers.cmake;R:\Program Files\CMake\share\cmake-3.24\Modules\CheckLanguage.cmake;R:\VST_SDK\vst3sdk\cmake\modules\SMTG_AAXSupport.cmake;R:\VST_SDK\vst3sdk\cmake\modules\SMTG_AddCommonOptions.cmake;R:\VST_SDK\vst3sdk\cmake\modules\SMTG_AddSMTGLibrary.cmake;R:\VST_SDK\vst3sdk\cmake\modules\SMTG_AddVST3Library.cmake;R:\VST_SDK\vst3sdk\cmake\modules\SMTG_AddVST3Options.cmake;R:\VST_SDK\vst3sdk\cmake\modules\SMTG_Bundle.cmake;R:\VST_SDK\vst3sdk\cmake\modules\SMTG_CodeSign.cmake;R:\VST_SDK\vst3sdk\cmake\modules\SMTG_ConfigureCmakeGenerator.cmake;R:\VST_SDK\vst3sdk\cmake\modules\SMTG_CoreAudioSupport.cmake;R:\VST_SDK\vst3sdk\cmake\modules\SMTG_CustomModuleTarget.cmake;R:\VST_SDK\vst3sdk\cmake\modules\SMTG_DetectPlatform.cmake;R:\VST_SDK\vst3sdk\cmake\modules\SMTG_ExportedSymbols.cmake;R:\VST_SDK\vst3sdk\cmake\modules\SMTG_Global.cmake;R:\VST_SDK\vst3sdk\cmake\modules\SMTG_PlatformIOS.cmake;R:\VST_SDK\vst3sdk\cmake\modules\SMTG_PlatformToolset.cmake;R:\VST_SDK\vst3sdk\cmake\modules\SMTG_Platform_Windows.cmake;R:\VST_SDK\vst3sdk\cmake\modules\SMTG_PrefixHeader.cmake;R:\VST_SDK\vst3sdk\cmake\modules\SMTG_SetDebugExecutable.cmake;R:\VST_SDK\vst3sdk\cmake\modules\SMTG_SetupVST3LibraryDefaultPath.cmake;R:\VST_SDK\vst3sdk\cmake\modules\SMTG_UniversalBinary.cmake;R:\VST_SDK\vst3sdk\cmake\modules\SMTG_VST3_SDK.cmake;R:\VST_SDK\vst3sdk\cmake\modules\SMTG_VstGuiSupport.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">R:\VST_SDK\my_plugins\NanoSynth\build\vst3sdk\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule R:/VST_SDK/vst3sdk/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
+"R:\Program Files\CMake\bin\cmake.exe" -SR:/VST_SDK/my_plugins/NanoSynth -BR:/VST_SDK/my_plugins/NanoSynth/build --check-stamp-file R:/VST_SDK/my_plugins/NanoSynth/build/vst3sdk/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">R:\Program Files\CMake\share\cmake-3.24\Modules\CMakeParseArguments.cmake;R:\Program Files\CMake\share\cmake-3.24\Modules\CMakePrintHelpers.cmake;R:\Program Files\CMake\share\cmake-3.24\Modules\CheckLanguage.cmake;R:\VST_SDK\vst3sdk\cmake\modules\SMTG_AAXSupport.cmake;R:\VST_SDK\vst3sdk\cmake\modules\SMTG_AddCommonOptions.cmake;R:\VST_SDK\vst3sdk\cmake\modules\SMTG_AddSMTGLibrary.cmake;R:\VST_SDK\vst3sdk\cmake\modules\SMTG_AddVST3Library.cmake;R:\VST_SDK\vst3sdk\cmake\modules\SMTG_AddVST3Options.cmake;R:\VST_SDK\vst3sdk\cmake\modules\SMTG_Bundle.cmake;R:\VST_SDK\vst3sdk\cmake\modules\SMTG_CodeSign.cmake;R:\VST_SDK\vst3sdk\cmake\modules\SMTG_ConfigureCmakeGenerator.cmake;R:\VST_SDK\vst3sdk\cmake\modules\SMTG_CoreAudioSupport.cmake;R:\VST_SDK\vst3sdk\cmake\modules\SMTG_CustomModuleTarget.cmake;R:\VST_SDK\vst3sdk\cmake\modules\SMTG_DetectPlatform.cmake;R:\VST_SDK\vst3sdk\cmake\modules\SMTG_ExportedSymbols.cmake;R:\VST_SDK\vst3sdk\cmake\modules\SMTG_Global.cmake;R:\VST_SDK\vst3sdk\cmake\modules\SMTG_PlatformIOS.cmake;R:\VST_SDK\vst3sdk\cmake\modules\SMTG_PlatformToolset.cmake;R:\VST_SDK\vst3sdk\cmake\modules\SMTG_Platform_Windows.cmake;R:\VST_SDK\vst3sdk\cmake\modules\SMTG_PrefixHeader.cmake;R:\VST_SDK\vst3sdk\cmake\modules\SMTG_SetDebugExecutable.cmake;R:\VST_SDK\vst3sdk\cmake\modules\SMTG_SetupVST3LibraryDefaultPath.cmake;R:\VST_SDK\vst3sdk\cmake\modules\SMTG_UniversalBinary.cmake;R:\VST_SDK\vst3sdk\cmake\modules\SMTG_VST3_SDK.cmake;R:\VST_SDK\vst3sdk\cmake\modules\SMTG_VstGuiSupport.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">R:\VST_SDK\my_plugins\NanoSynth\build\vst3sdk\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="R:\VST_SDK\vst3sdk\cmake\modules\SMTG_AAXSupport.cmake">
+    </None>
+    <None Include="R:\VST_SDK\vst3sdk\cmake\modules\SMTG_AddAAXLibrary.cmake">
+    </None>
+    <None Include="R:\VST_SDK\vst3sdk\cmake\modules\SMTG_AddVST3AuV3.cmake">
+    </None>
+    <None Include="R:\VST_SDK\vst3sdk\cmake\modules\SMTG_AddVST3Library.cmake">
+    </None>
+    <None Include="R:\VST_SDK\vst3sdk\cmake\modules\SMTG_AddVST3Options.cmake">
+    </None>
+    <None Include="R:\VST_SDK\vst3sdk\cmake\modules\SMTG_CoreAudioSupport.cmake">
+    </None>
+    <None Include="R:\VST_SDK\vst3sdk\cmake\modules\SMTG_ExportedSymbols.cmake">
+    </None>
+    <None Include="R:\VST_SDK\vst3sdk\cmake\modules\SMTG_FindJack.cmake">
+    </None>
+    <None Include="R:\VST_SDK\vst3sdk\cmake\modules\SMTG_SetupVST3LibraryDefaultPath.cmake">
+    </None>
+    <None Include="R:\VST_SDK\vst3sdk\cmake\modules\SMTG_VST3_SDK.cmake">
+    </None>
+    <None Include="R:\VST_SDK\vst3sdk\cmake\modules\SMTG_VstGuiSupport.cmake">
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="R:\VST_SDK\my_plugins\NanoSynth\build\ZERO_CHECK.vcxproj">
+      <Project>{8B8436BA-B77C-38DD-84B2-A837FE10CA01}</Project>
+      <Name>ZERO_CHECK</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
