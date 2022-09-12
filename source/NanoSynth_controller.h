@@ -2,16 +2,32 @@
 // Copyright(c) 2022 quero.
 //------------------------------------------------------------------------
 
-#pragma once
+#ifndef __vst_synth_controller__
+#define __vst_synth_controller__
 
 #include "public.sdk/source/vst/vsteditcontroller.h"
+#include "pluginterfaces/vst/ivstnoteexpression.h"
+#include "vstgui/plugin-bindings/vst3editor.h"
+
 
 namespace Quero {
 
 //------------------------------------------------------------------------
 //  NanoSynthController
 //------------------------------------------------------------------------
-class NanoSynthController : public Steinberg::Vst::EditControllerEx1
+/*
+	The Controller handles the GUI and MIDI Mapping details
+	In VST3, all non-note messages (ie everything BUT noteOn and noteOff) are
+	handled via a controller mapping. In some cases, create dummy
+	controls that are not intended for the final GUI so that I can get these
+	messages. WP
+
+	NOTE: Multiple Inheriance
+		  EditController - the base controller stuff
+		  IMidiMapping - the MIDI Mapping Interface allowing us to RX MIDI
+
+*/
+class NanoSynthController : public Steinberg::Vst::EditControllerEx1, public Steinberg::Vst::IMidiMapping
 {
 public:
 //------------------------------------------------------------------------
@@ -42,16 +58,25 @@ public:
                                                          Steinberg::Vst::TChar* string,
                                                          Steinberg::Vst::ParamValue& valueNormalized) SMTG_OVERRIDE;
 
- 	//---Interface---------
-	DEFINE_INTERFACES
-		// Here you can add more supported VST3 interfaces
-		// DEF_INTERFACE (Vst::IXXX)
-	END_DEFINE_INTERFACES (EditController)
-    DELEGATE_REFCOUNT (EditController)
+	//	IMidiMapping
+	virtual Steinberg::tresult PLUGIN_API getMidiControllerAssignment(Steinberg::int32 busIndex, Steinberg::int16 channel, Steinberg::Vst::CtrlNumber midiControllerNumber, Steinberg::Vst::ParamID& id/*out*/);
 
-//------------------------------------------------------------------------
-protected:
+	Steinberg::tresult PLUGIN_API setParamNormalizedFromFile(Steinberg::Vst::ParamID tag, Steinberg::Vst::ParamValue value);
+
+	//	oridinarily not needed; see documentation on Automation for using these
+	virtual Steinberg::Vst::ParamValue PLUGIN_API normalizedParamToPlain(Steinberg::Vst::ParamID id, Steinberg::Vst::ParamValue valueNormalized);
+	virtual Steinberg::Vst::ParamValue PLUGIN_API plainParamToNormalized(Steinberg::Vst::ParamID id, Steinberg::Vst::ParamValue plainValue);
+
+	
+	//	define the controller and interface
+	OBJ_METHODS(NanoSynthController, EditControllerEx1)
+	DEFINE_INTERFACES
+		DEF_INTERFACE(IMidiMapping)
+	END_DEFINE_INTERFACES(EditControllerEx1)
+	REFCOUNT_METHODS(EditControllerEx1)
+
 };
 
 //------------------------------------------------------------------------
 } // namespace Quero
+#endif

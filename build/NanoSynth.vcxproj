@@ -24,7 +24,7 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
     <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
@@ -57,6 +57,11 @@
     <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</GenerateManifest>
     <LocalDebuggerCommand Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProgramW6432)/Steinberg/VST3PluginTestHost/VST3PluginTestHost.exe</LocalDebuggerCommand>
     <LocalDebuggerCommandArguments Condition="'$(Configuration)|$(Platform)'=='Release|x64'">--pluginfolder "$(OutDir)/"</LocalDebuggerCommandArguments>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <PreBuildEventUseInBuild>false</PreBuildEventUseInBuild>
+    <PreLinkEventUseInBuild>false</PreLinkEventUseInBuild>
+    <PostBuildEventUseInBuild>false</PostBuildEventUseInBuild>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -92,7 +97,8 @@
       <ProxyFileName>%(Filename)_p.c</ProxyFileName>
     </Midl>
     <PreLinkEvent>
-      <Message>		</Message>
+      <Message>
+      </Message>
       <Command>setlocal
 "R:\Program Files\CMake\bin\cmake.exe" -E make_directory R:/VST_SDK/my_plugins/NanoSynth/build/VST3/Debug/NanoSynth.vst3/Contents/Resources
 if %errorlevel% neq 0 goto :cmEnd
@@ -134,7 +140,8 @@ exit /b %1
 if %errorlevel% neq 0 goto :VCEnd</Command>
     </PreLinkEvent>
     <PostBuildEvent>
-      <Message>		</Message>
+      <Message>
+      </Message>
       <Command>setlocal
 cd R:\VST_SDK\my_plugins\NanoSynth\build\bin
 if %errorlevel% neq 0 goto :cmEnd
@@ -235,7 +242,8 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <ProxyFileName>%(Filename)_p.c</ProxyFileName>
     </Midl>
     <PreLinkEvent>
-      <Message>		</Message>
+      <Message>
+      </Message>
       <Command>setlocal
 "R:\Program Files\CMake\bin\cmake.exe" -E make_directory R:/VST_SDK/my_plugins/NanoSynth/build/VST3/Release/NanoSynth.vst3/Contents/Resources
 if %errorlevel% neq 0 goto :cmEnd
@@ -277,7 +285,8 @@ exit /b %1
 if %errorlevel% neq 0 goto :VCEnd</Command>
     </PreLinkEvent>
     <PostBuildEvent>
-      <Message>		</Message>
+      <Message>
+      </Message>
       <Command>setlocal
 cd R:\VST_SDK\my_plugins\NanoSynth\build\bin
 if %errorlevel% neq 0 goto :cmEnd
@@ -372,9 +381,15 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\source\logscale.h" />
+    <ClInclude Include="..\source\lookuptables.h" />
+    <ClInclude Include="..\source\pluginconstants.h" />
+    <ClInclude Include="..\source\synthfunctions.h" />
+    <ClInclude Include="..\source\SynthParamLimits.h" />
     <ClInclude Include="R:\VST_SDK\my_plugins\NanoSynth\source\version.h" />
     <ClInclude Include="R:\VST_SDK\my_plugins\NanoSynth\source\NanoSynth_cids.h" />
     <ClInclude Include="R:\VST_SDK\my_plugins\NanoSynth\source\NanoSynth_processor.h" />
+    <ClCompile Include="..\source\pluginobjects.cpp" />
     <ClCompile Include="R:\VST_SDK\my_plugins\NanoSynth\source\NanoSynth_processor.cpp" />
     <ClInclude Include="R:\VST_SDK\my_plugins\NanoSynth\source\NanoSynth_controller.h" />
     <ClCompile Include="R:\VST_SDK\my_plugins\NanoSynth\source\NanoSynth_controller.cpp" />

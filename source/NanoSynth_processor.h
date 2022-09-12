@@ -2,9 +2,20 @@
 // Copyright(c) 2022 quero.
 //------------------------------------------------------------------------
 
-#pragma once
+#ifndef __vst_synth_processor__
+#define __vst_synth_processor__
 
 #include "public.sdk/source/vst/vstaudioeffect.h"
+
+#include "vstgui/vstgui.h"
+#include "public.sdk/source/vst/vstparameters.h"
+#include "pluginterfaces/vst/ivstevents.h"
+#include "pluginterfaces/base/ustring.h"
+
+#include "synthfunctions.h"
+
+#define MAX_VOICES 16
+#define OUTPUT_CHANNELS 2 // stereo only!
 
 namespace Quero {
 
@@ -48,10 +59,41 @@ public:
 	Steinberg::tresult PLUGIN_API setState (Steinberg::IBStream* state) SMTG_OVERRIDE;
 	Steinberg::tresult PLUGIN_API getState (Steinberg::IBStream* state) SMTG_OVERRIDE;
 
+	//	Define the audio I/O we support
+	Steinberg::tresult PLUGIN_API setBusArrangements(Steinberg::Vst::SpeakerArrangement* inputs, Steinberg::int32 numIns, Steinberg::Vst::SpeakerArrangement* outputs, Steinberg::int32 numOuts);
+
 //------------------------------------------------------------------------
 protected:
+	//	functions to reduce size of process()
+	bool doControlUpdate(Steinberg::Vst::ProcessData& data);
+
+	//	for MIDI note-on/off
+	bool doProcessEvent(Steinberg::Vst::Event& vstEvent);
+
+	//	updates all voices at once
+	void update();
+
+	//	to load up the samples in new voices
+	//bool loadSamples();
+
+	//	for portamento
+	double m_dLastNoteFrequency;
+
+	//	MIDI variables
+	bool m_bSustainPedal;
+
+	//	MIDI receive channel
+	UINT m_uMidiRxChannel;
+
+	//	these are VST3 specific variables for non-note MIDI messages!
+	double m_dMIDIPitchBend;
+	UINT m_uMIDIModWheel;
+	UINT m_uMIDIVolumeCC7;
+	UINT m_uMIDIPanCC10;
+	UINT m_uMIDIExpressionCC11;
 
 };
 
 //------------------------------------------------------------------------
 } // namespace Quero
+#endif

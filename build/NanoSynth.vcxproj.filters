@@ -13,6 +13,9 @@
     <ClCompile Include="R:\VST_SDK\vst3sdk\public.sdk\source\main\dllmain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\pluginobjects.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="R:\VST_SDK\my_plugins\NanoSynth\source\version.h">
@@ -25,6 +28,21 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="R:\VST_SDK\my_plugins\NanoSynth\source\NanoSynth_controller.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\logscale.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\lookuptables.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\pluginconstants.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\synthfunctions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\SynthParamLimits.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
