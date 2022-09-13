@@ -381,15 +381,23 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\source\LFO.h" />
     <ClInclude Include="..\source\logscale.h" />
     <ClInclude Include="..\source\lookuptables.h" />
+    <ClInclude Include="..\source\Oscillator.h" />
     <ClInclude Include="..\source\pluginconstants.h" />
+    <ClInclude Include="..\source\QBLimitedOscillator.h" />
     <ClInclude Include="..\source\synthfunctions.h" />
     <ClInclude Include="..\source\SynthParamLimits.h" />
+    <ClInclude Include="..\source\WTOscillator.h" />
     <ClInclude Include="R:\VST_SDK\my_plugins\NanoSynth\source\version.h" />
     <ClInclude Include="R:\VST_SDK\my_plugins\NanoSynth\source\NanoSynth_cids.h" />
     <ClInclude Include="R:\VST_SDK\my_plugins\NanoSynth\source\NanoSynth_processor.h" />
+    <ClCompile Include="..\source\LFO.cpp" />
+    <ClCompile Include="..\source\Oscillator.cpp" />
     <ClCompile Include="..\source\pluginobjects.cpp" />
+    <ClCompile Include="..\source\QBLimitedOscillator.cpp" />
+    <ClCompile Include="..\source\WTOscillator.cpp" />
     <ClCompile Include="R:\VST_SDK\my_plugins\NanoSynth\source\NanoSynth_processor.cpp" />
     <ClInclude Include="R:\VST_SDK\my_plugins\NanoSynth\source\NanoSynth_controller.h" />
     <ClCompile Include="R:\VST_SDK\my_plugins\NanoSynth\source\NanoSynth_controller.cpp" />

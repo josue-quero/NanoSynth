@@ -387,7 +387,7 @@ tresult PLUGIN_API NanoSynthProcessor::process (Vst::ProcessData& data)
 		for (int i = 0; i < OUTPUT_CHANNELS; i++) {
 			//	data.outputs[0] = BUS 0
 			buffers[i] = (double*)data.outputs[0].channelBuffers32[i];
-			memset(buffers[i], 0, data.numSamples * sizeof(float));
+			memset(buffers[i], 0, data.numSamples * sizeof(double));
 		}
 
 		//	total number of samples in the input Buffer
