@@ -15,7 +15,13 @@
 #include "synthfunctions.h"
 
 #define MAX_VOICES 16
-#define OUTPUT_CHANNELS 2 // stereo only!
+#define OUTPUT_CHANNELS 2 //	stereo only
+
+
+//	synth objects
+#include "WTOscillator.h"
+#include "QBLimitedOscillator.h"
+#include "LFO.h"
 
 namespace Quero {
 
@@ -64,14 +70,31 @@ public:
 
 //------------------------------------------------------------------------
 protected:
+	//	NanoSynth Components
+
+	//	the two oscillators
+	QBLimitedOscillator m_Osc1;
+	QBLimitedOscillator m_Osc2;
+
+	//	one LFO
+	LFO m_LFO1;
+
+
+	//	updates all voices at once
+	void update();
+
+	//	5 GUI Controllers for NanoSynth
+	UINT m_uOscWaveform;
+	UINT m_uLFO1Waveform;
+	double m_dLFO1Rate;
+	double m_dLFO1Amplitude;
+	UINT m_uLFO1Mode;
+
 	//	functions to reduce size of process()
 	bool doControlUpdate(Steinberg::Vst::ProcessData& data);
 
 	//	for MIDI note-on/off
 	bool doProcessEvent(Steinberg::Vst::Event& vstEvent);
-
-	//	updates all voices at once
-	void update();
 
 	//	to load up the samples in new voices
 	//bool loadSamples();

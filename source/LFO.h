@@ -1,10 +1,10 @@
 #pragma once
 #include "oscillator.h"
 
-class CLFO : public Oscillator {
+class LFO : public Oscillator {
 public:
-	CLFO(void);
-	~CLFO(void);
+	LFO(void);
+	~LFO(void);
 
 	//	virtual overrides
 	virtual void reset();
@@ -94,7 +94,7 @@ public:
 				//	triv saw
 				dOut = unipolarToBipolar(m_dModulo);
 
-				//	bipolar triagle
+				//	bipolar triangle
 				dOut = 2.0 * fabs(dOut) - 1.0;
 
 				if (m_uLFOMode == shot) {

@@ -168,8 +168,7 @@ void WTOscillator::destroyWaveTables() {
 }
 
 //	Get table index based on current m_dFo
-int WTOscillator::getTableIndex()
-{
+int WTOscillator::getTableIndex() {
 	if (m_uWaveform == SINE) {
 		return -1;
 	}

@@ -1376,6 +1376,10 @@ CWaveData::~CWaveData()
 
  However, VSTGUI4 has a platform independent file open dialog CNewFileSelector that we can use.
 
+RackAFX:
+  -- You must install the VSTGUI4 main folder (named vstgui4) in your RackAFX projects folder (see the Advanced GUI Tutorials at www.willpirkle.com)
+     The include is #include "../vstgui4/vstgui/vstgui.h"
+
 VST3 MacOS:
  --- The VSTGUI4 library is included with the VST3 SDK
      The include is #include "vstgui4/vstgui/vstgui.h"
@@ -1383,6 +1387,10 @@ VST3 MacOS:
 AU   MacOS:
  --- The VSTGUI4 library is included with the project
      The include is #include "vstgui4/vstgui/vstgui.h"
+
+AAX   MacOS:
+--- You must install the VSTGUI4 main folder (named vstgui4) in your ExamplePlugins folder (see www.willpirkle.com)
+    The include is #include "vstgui/vstgui.h"
 
 */
 

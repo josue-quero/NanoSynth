@@ -3,9 +3,15 @@
 
 
 //-----------------------------------------------------------------------------
-// TemplateSynth Parameters
+// NanoSynth Parameters
 //-----------------------------------------------------------------------------
-enum {
+enum {     	
+	OSC_WAVEFORM,
+	LFO1_WAVEFORM,
+	LFO1_RATE,
+	LFO1_AMPLITUDE,
+	LFO1_MODE,
+
 	MIDI_PITCHBEND,
 	MIDI_MODWHEEL,
 	MIDI_VOLUME_CC7,
@@ -15,11 +21,15 @@ enum {
 	MIDI_CHANNEL_PRESSURE,
 	MIDI_ALL_NOTES_OFF,
 
-	NUMBER_OF_SYNTH_PARAMETERS // alsways last
+	NUMBER_OF_SYNTH_PARAMETERS //	always last
 };
 
 
-// --- define the HI, LO and DEFAULT values for our controls
+//	define the HI, LO and DEFAULT values for our controls
+#define MIN_PITCHED_OSC_WAVEFORM 0
+#define MAX_PITCHED_OSC_WAVEFORM 7
+#define DEFAULT_PITCHED_OSC_WAVEFORM 0
+
 #define MIN_VOICE_MODE 0
 #define MAX_VOICE_MODE 5
 #define DEFAULT_VOICE_MODE 0
@@ -28,7 +38,7 @@ enum {
 #define MAX_LOOP_MODE 2
 #define DEFAULT_LOOP_MODE 0
 
-// VS
+//	VS
 #define MIN_PATH_MODE 0
 #define MAX_PATH_MODE 3
 #define DEFAULT_PATH_MODE 0
@@ -57,7 +67,7 @@ enum {
 #define MAX_PORTAMENTO_TIME_MSEC 5000.0
 #define DEFAULT_PORTAMENTO_TIME_MSEC 0.0
 
-// for all EG Int EXCEPT LFO->PAN Int
+//	for all EG Int EXCEPT LFO->PAN Int
 #define MIN_BIPOLAR -1.0
 #define MAX_BIPOLAR 1.0
 #define DEFAULT_BIPOLAR 0.0
@@ -76,6 +86,11 @@ enum {
 #define MIN_FILTER_Q 1.0
 #define MAX_FILTER_Q 10.0
 #define DEFAULT_FILTER_Q 1.0
+
+//	sync, one shot, free
+#define MIN_LFO_MODE 0
+#define MAX_LFO_MODE 2
+#define DEFAULT_LFO_MODE 0	
 
 #define MIN_LFO_RATE 0.02
 #define MAX_LFO_RATE 20.0
@@ -113,12 +128,12 @@ enum {
 #define MAX_OUTPUT_AMPLITUDE_DB 24.0
 #define DEFAULT_OUTPUT_AMPLITUDE_DB 0.0	
 
-// NOTE these are +/- units, so +/-1 to +/-12 semis
+//	NOTE these are +/- units, so +/-1 to +/-12 semis
 #define MIN_PITCHBEND_RANGE 1
 #define MAX_PITCHBEND_RANGE 12
 #define DEFAULT_PITCHBEND_RANGE 1	
 
-// on/off switches
+//	on/off switches
 #define MIN_ONOFF_SWITCH 0
 #define MAX_ONOFF_SWITCH 1
 #define DEFAULT_ONOFF_SWITCH 0	
@@ -142,5 +157,5 @@ enum {
 #define DEFAULT_MIDI_PAN 64
 #define DEFAULT_MIDI_EXPRESSION 0
 
-#endif	// __synthparamlimits__
+#endif
 

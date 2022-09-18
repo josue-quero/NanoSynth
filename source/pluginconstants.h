@@ -277,7 +277,9 @@ typedef struct
 	int nNumParams; // = number of ordinary RAFX variables + 2 for Vector Joystick
 }PROCESS_INFO;
 
-
+// --- thanks to Alexirae on my Forum for this LPF smoother; see:
+//     http://www.willpirkle.com/forum/synth-algorithms/frequency-change-in-wtoscillator/
+//
 class CFloatParamSmoother
 {
 public:
@@ -912,7 +914,7 @@ public:
 		m_f_Yz_2 = m_f_Yz_1;
 		m_f_Yz_1 = yn;
 
-		//	X delays
+		// X delays
 		m_f_Xz_2 = m_f_Xz_1;
 		m_f_Xz_1 = f_xn;
 
@@ -991,22 +993,22 @@ public:
 	float* m_pJSProgramTable;
 };
 
-//	CWaveTable
-//	generic WT Oscillator for you to use
+// --- CWaveTable ---
+// generic WT Oscillator for you to use
 class CWaveTable
 {
 public:	// Functions
 	//
-	//	One Time Initialization
+	// One Time Initialization
 	CWaveTable();
 
-	//	One Time Destruction
+	// One Time Destruction
 	~CWaveTable(void);
 
-	//	The Prepare For Play Function is called just before audio streams
+	// The Prepare For Play Function is called just before audio streams
 	bool prepareForPlay();
 
-	//  MEMBER FUNCTIONS
+	// --- MEMBER FUNCTIONS
 	//  function to do render one sample of the Oscillator
 	//  call this once per sample period
 	//
@@ -1018,86 +1020,86 @@ public:	// Functions
 	void reset()
 	{
 		m_fReadIndex = 0.0;
-		m_fQuadPhaseReadIndex = 256.0;	//	1/4 of our 1024 point buffer
+		m_fQuadPhaseReadIndex = 256.0;	// 1/4 of our 1024 point buffer
 	}
 
-	//	set the sample rate: NEEDED to calcualte the increment value from frequency
+	// set the sample rate: NEEDED to calcualte the increment value from frequency
 	void setSampleRate(int nSampleRate)
 	{
 		m_nSampleRate = nSampleRate;
 	}
 
-	//	our cooking function
+	// our cooking function
 	void cookFrequency()
 	{
-		//	inc = L*fd/fs
+		// inc = L*fd/fs
 		m_f_inc = 1024.0 * m_fFrequency_Hz / (float)m_nSampleRate;
 	}
 
-	//	MEMBER OBJECTS
-	//	Array for the Table
+	// --- MEMBER OBJECTS
+	// Array for the Table
 	float m_SinArray[1024];			// 1024 Point Sinusoid
 	float m_SawtoothArray[1024];    // saw
 	float m_TriangleArray[1024];	// tri
 	float m_SquareArray[1024];		// sqr
 
-	//	band limited to 5 partials
+	// band limited to 5 partials
 	float m_SawtoothArray_BL5[1024];    // saw, BL = 5
 	float m_TriangleArray_BL5[1024];	// tri, BL = 5
 	float m_SquareArray_BL5[1024];		// sqr, BL = 5
 
-	//	current read location
+	// current read location
 	float m_fReadIndex;					// NOTE its a FLOAT!
 	float m_fQuadPhaseReadIndex;		// NOTE its a FLOAT!
 
-	//	our inc value
+	// our inc value
 	float m_f_inc;
 
-	//	fs value
+	// fs value
 	int   m_nSampleRate;
 
-	//	user-controlled variables:
-	//	Frequency
+	// user-controlled variables:
+	// Frequency
 	float m_fFrequency_Hz;
 
-	//	Inverted Output
+	// Inverted Output
 	bool m_bInvert;
 
-	//	Type
+	// Type
 	UINT m_uOscType;
 	enum { sine, saw, tri, square };
 
-	//	Mode
+	// Mode
 	UINT m_uTableMode;
 	enum { normal, bandlimit };
 
-	//	Polarity
+	// Polarity
 	UINT m_uPolarity;
 	enum { bipolar, unipolar };
 };
 
 //
-//	This is a helper object for reading Wave files into floating point buffers.
-//	It is NOT optimized for speed (yet)
+// This is a helper object for reading Wave files into floating point buffers.
+// It is NOT optimized for speed (yet)
 #if defined _WINDOWS || defined _WINDLL
 #include <mmsystem.h>
 
 // wave file parser
 class CWaveData
 {
-public:	//	Functions
+public:	// Functions
 	//
-	//	One Time Initialization
-	//	pFilePath is the FULLY qualified file name + additional path info
-	//	VALID Examples: audio.wav
+	// One Time Initialization
+	// pFilePath is the FULLY qualified file name + additional path info
+	// VALID Examples: audio.wav
 	//				   //samples//audio.wav
 	CWaveData(char* pFilePath = NULL);
 
-	//	prompts with file open dialog, returns TRUE if successfuly
-	//	opened and parsed the file into the member m_pWaveBuffer
+	// prompts with file open dialog, returns TRUE if successfuly
+	// opened and parsed the file into the member m_pWaveBuffer
 	bool initWithUserWAVFile(char* pInitDir = NULL);
 
-	//	One Time Destruction
+	// One Time Destruction
 	~CWaveData(void);
 
 	UINT m_uNumChannels;
@@ -1114,7 +1116,7 @@ public:	//	Functions
 
 	bool m_bWaveLoaded;
 
-	//	the WAV file converted to floats on range of -1.0 --> +1.0
+	// the WAV file converted to floats on range of -1.0 --> +1.0
 	float* m_pWaveBuffer;
 
 protected:
@@ -1124,22 +1126,22 @@ protected:
 };
 #else // MacOS Version here!
 
-//	wave file parser
+// wave file parser
 class CWaveData
 {
-public:	//	Functions
+public:	// Functions
 	//
-	//	One Time Initialization
-	//	pFilePath is the FULLY qualified file name + additional path info
-	//	VALID Examples: audio.wav
+	// One Time Initialization
+	// pFilePath is the FULLY qualified file name + additional path info
+	// VALID Examples: audio.wav
 	//				   //samples//audio.wav
 	CWaveData(char* pFilePath = NULL);
 
-	//	prompts with file open dialog, returns TRUE if successfuly
-	//	opened and parsed the file into the member m_pWaveBuffer
+	// prompts with file open dialog, returns TRUE if successfuly
+	// opened and parsed the file into the member m_pWaveBuffer
 	bool initWithUserWAVFile(char* pInitDir = NULL);
 
-	//	One Time Destruction
+	// One Time Destruction
 	~CWaveData(void);
 
 	UINT m_uNumChannels;
@@ -1156,7 +1158,7 @@ public:	//	Functions
 
 	bool m_bWaveLoaded;
 
-	//	the WAV file converted to floats on range of -1.0 --> +1.0
+	// the WAV file converted to floats on range of -1.0 --> +1.0
 	float* m_pWaveBuffer;
 
 protected:
@@ -1165,13 +1167,13 @@ protected:
 
 #endif
 
-//	CUICtrl
+// --- CUICtrl ---
 //
-//	CUICtrl is the C++ obhect that manages your GUI objects
-//	like sliders and buttons. Do not ever edit or change this code as the
-//	objects are shared with the Client and you may break the app.
+// CUICtrl is the C++ obhect that manages your GUI objects
+// like sliders and buttons. Do not ever edit or change this code as the
+// objects are shared with the Client and you may break the app.
 //
-//	enum for VU Colors
+// enum for VU Colors
 enum { csVU, csRed, csOrange, csYellow, csGreen, csBlue, csViolet };
 
 class CUICtrl
@@ -1195,14 +1197,14 @@ public:
 	float fInitUserDoubleValue;
 	float fInitUserUINTValue;
 
-	//	for parameter smoothing only
+	// --- for parameter smoothing only
 	float fSmoothingFloatValue;
 
 	CFloatParamSmoother m_FloatParamSmoother;
 	float fSmoothingTimeInMs;
 	bool bEnableParamSmoothing;
 
-	//	Vector Joystick values are NOT pointer-bound
+	// --- Vector Joystick values are NOT pointer-bound
 	float fJoystickValue;
 	bool bKorgVectorJoystickOrientation;
 
@@ -1283,7 +1285,7 @@ public:
 		this->fInitUserDoubleValue = aCUICtrl.fInitUserDoubleValue;
 		this->fInitUserUINTValue = aCUICtrl.fInitUserUINTValue;
 
-		//	for smoothing only, does not currently need copying, but leaving for future use
+		// --- for smoothing only, does not currently need copying, but leaving for future use
 		this->fSmoothingFloatValue = aCUICtrl.fSmoothingFloatValue;
 		this->fSmoothingTimeInMs = aCUICtrl.fSmoothingTimeInMs;
 		this->bEnableParamSmoothing = aCUICtrl.bEnableParamSmoothing;
@@ -1353,13 +1355,13 @@ public:
 };
 
 
-//	CUIControlList
-//	This is the linked list of control objects
+// -- CUIControlList --
+// This is the linked list of control objects
 const UINT uMaxVSTProgramNameLen = 24;
 
-//	generic pure C++ linked list of CUICtrl objects (not pointers!)
-//  leaving this alone as much code depends on it directly; see 
-//  below for a class-template version used for other linked-lists in RackAFX
+// --- generic pure C++ linked list of CUICtrl objects (not pointers!)
+//     leaving this alone as much code depends on it directly; see 
+//     below for a class-template version used for other linked-lists in RackAFX
 class CUIControlList
 {
 private:
@@ -1374,7 +1376,7 @@ public:
 	CUIControlList();
 	~CUIControlList();
 
-	//	basic functions
+	// --- basic functions
 	void append(CUICtrl data);
 	void add_as_first(CUICtrl data);
 	void addafter(int c, CUICtrl data);
@@ -1383,17 +1385,17 @@ public:
 	void display();
 	int count();
 
-	//	does not count LED Meters
+	// --- does not count LED Meters
 	int countLegalVSTIF();
 	int countLegalCustomVSTGUI();
 
-	//	find operation
+	// --- find operation
 	CUICtrl* getAt(int nIndex);
 
-	//	VST2 uMaxVSTProgramNameLen = 24; no longer used, but keeping for future
+	// --- VST2 uMaxVSTProgramNameLen = 24; no longer used, but keeping for future
 	char name[uMaxVSTProgramNameLen + 1];
 
-	//	= operator for collections
+	// --- = operator for collections
 	CUIControlList& operator=(CUIControlList& aCUICtrlList)
 	{
 		if (this == &aCUICtrlList)
@@ -1421,9 +1423,15 @@ public:
 	host because the std:: library's binary is different for all versions of Visual Studio as well as
 	the Debug/Release configurations within each version.
 
-	For lists of structure objects, define the
-	structs. For lists of objects, it is necessary to override your equals-operator (= operator) so that
+	The object is based on the code here: https://github.com/odem5442/DSAlgos/blob/master/linkedlist.cpp
+	However, I believe there is at least one error in the above code (in the del( ) method). It also does
+	not contain the push/pop operations that I added for stack-ish behavior.
+
+	You can use this for your own lists/stacks. For lists of structure objects, you only need to define the
+	structs. For lists of objects, you will need to override your equals-operator (= operator) so that
 	copying works properly.
+
+	- Will Pirkle
 */
 template <class T>
 class CLinkedList
@@ -1440,13 +1448,13 @@ public:
 	CLinkedList<T>() { top = NULL; }
 	~CLinkedList<T>() { deleteAll(); }
 
-	//	basic functions
+	// --- basic functions
 	//
-	//	append(T object)
-	//	or
-	//	pushBottom(T object)
+	// --- append(T object)
+	// or
+	// --- pushBottom(T object)
 	//
-	//	add element to bottom of list/stack
+	//		add element to bottom of list/stack
 #define pushBottom  append
 	inline void append(T object)
 	{
@@ -1471,8 +1479,8 @@ public:
 		}
 	}
 
-	//	pushTop(T object)
-	//	add element to top of list/stack
+	// --- pushTop(T object)
+	//		add element to top of list/stack
 	inline void pushTop(T object)
 	{
 		node* q;
@@ -1482,13 +1490,13 @@ public:
 		top = q;
 	}
 
-	//	popTop(T& object)
+	//--- popTop(T& object)
 	//
-	//  pop element from top of stack and delete
-	//  makes a copy in the caller supplied object 
+	//      pop element from top of stack and delete
+	//      makes a copy in the caller supplied object 
 	//
-	//	return value is success in popping top
-	//	use pushTop/popTop for FILO stack
+	//		return value is success in popping top
+	//		use pushTop/popTop for FILO stack
 	inline bool popTop(T& object)
 	{
 		if (top)
@@ -1500,13 +1508,13 @@ public:
 		return false;
 	}
 
-	//	popBottom(T& object)
+	//--- popBottom(T& object)
 	//
-	//  pop element from bottom of stack and delete
-	//  makes a copy in the caller supplied object 
+	//      pop element from bottom of stack and delete
+	//      makes a copy in the caller supplied object 
 	//
-	//	return value is success in popping bottom
-	//	use pushTop/popBottom for FIFO stack
+	//     return value is success in popping bottom
+	//     use pushTop/popBottom for FIFO stack
 	inline bool popBottom(T& object)
 	{
 		int nBottom = count() - 1;
@@ -1520,11 +1528,11 @@ public:
 		return false;
 	}
 
-	//	addafter(T& object)
+	//--- addafter(T& object)
 	//
-	//  insert an element after a certain index
-	//	int c		index to insert after
-	//	T object	object
+	//      insert an element after a certain index
+	//		int c		index to insert after
+	//		T object	object
 	inline void addafter(int c, T object)
 	{
 		node* q, * t;
@@ -1542,10 +1550,10 @@ public:
 		q->link = t;
 	}
 
-	//	addafter(T& object)
+	//--- addafter(T& object)
 	//
-	//	delete an element at a certain index
-	//	int c		index of element to delete
+	//		delete an element at a certain index
+	//		int c		index of element to delete
 	inline void deleteAt(int c)
 	{
 		node* q, * r;
@@ -1575,18 +1583,18 @@ public:
 		}
 	}
 
-	//	deleteAll(T& object)
+	//--- deleteAll(T& object)
 	//
-	//	delete all elements
+	//		delete all elements
 	inline void deleteAll()
 	{
 		for (int j = count() - 1; j >= 0; j--)
 			deleteAt(j);
 	}
 
-	//	count()
+	//--- count()
 	//
-	//	returns count of items in list
+	//		returns count of items in list
 	inline int count()
 	{
 		node* q;
@@ -1597,10 +1605,10 @@ public:
 		return c;
 	}
 
-	//	getAt()
+	//--- getAt()
 	//
-	//	returns pointer to item at nIndex
-	//	or NULL if no item found
+	//		returns pointer to item at nIndex
+	//		or NULL if no item found
 	inline T* getAt(int nIndex)
 	{
 		node* q;
@@ -1614,7 +1622,7 @@ public:
 		return NULL;
 	}
 
-	//	= operator for collections
+	// --- = operator for collections
 	CLinkedList& operator=(CLinkedList& aCLinkedList)
 	{
 		if (this == &aCLinkedList)

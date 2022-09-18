@@ -44,6 +44,14 @@ NanoSynthProcessor::NanoSynthProcessor ()
 	setControllerClass (kNanoSynthControllerUID);
 	
 	//	Finish initializations here
+
+	//	GUI Controls
+	m_uOscWaveform = DEFAULT_PITCHED_OSC_WAVEFORM;
+	m_uLFO1Waveform = DEFAULT_LFO_WAVEFORM;
+	m_dLFO1Rate = DEFAULT_LFO_RATE;
+	m_dLFO1Amplitude = DEFAULT_UNIPOLAR;
+	m_uLFO1Mode = DEFAULT_LFO_MODE;
+
 	m_dLastNoteFrequency = 0.0;
 
 	//	sus pedal support
@@ -107,18 +115,27 @@ tresult PLUGIN_API NanoSynthProcessor::terminate ()
 	Processor::setActive()
 	This is the analog of prepareForPlay() in RAFX since the Sample Rate is now set.
 
-	VST3 plugins may be turned on or off; you are supposed to dynamically delare stuff when activated
-	then delete when de-activated. So, we handle our voice stack here.
+	VST3 plugins may be turned on or off; supposidly it should be dynamically delared when activated
+	then deleted when de-activated. So,voice stacks are handled here.
 */
 tresult PLUGIN_API NanoSynthProcessor::setActive (TBool state)
 {
-	if (state)
-	{
-		// --- do ON stuff
-	}
-	else
-	{
-		// --- do OFF stuff
+	if (state) {
+		//	do ON stuff
+		// 
+		// 
+		//	set sample rates
+		m_Osc1.setSampleRate((double)processSetup.sampleRate);
+		m_Osc2.setSampleRate((double)processSetup.sampleRate);
+		m_LFO1.setSampleRate((double)processSetup.sampleRate);
+
+		//	detune
+		m_Osc2.m_nCents = 2.5; // +2.5 cents detuned
+
+		//	update all
+		update();
+	} else {
+		//	do OFF stuff
 	}
 
 	//--- called when the Plug-in is enable/disable (On/Off) -----
@@ -127,11 +144,22 @@ tresult PLUGIN_API NanoSynthProcessor::setActive (TBool state)
 
 /*
 	Processor::update()
-	Our own function to update the voice(s) of the synth with UI Changes.
+	Custom function to update the voice(s) of the synth with UI Changes.
 */
 void NanoSynthProcessor::update()
 {
+	//	Connection of the GUI controls to the synth
+	//	transfering the GUI control variables over to the synth objects
+	m_Osc1.m_uWaveform = m_uOscWaveform;
+	m_Osc2.m_uWaveform = m_uOscWaveform;
+	m_Osc1.update();
+	m_Osc2.update();
 
+	m_LFO1.m_uWaveform = m_uLFO1Waveform;
+	m_LFO1.m_dAmplitude = m_dLFO1Amplitude;
+	m_LFO1.m_dOscFo = m_dLFO1Rate;
+	m_LFO1.m_uLFOMode = m_uLFO1Mode;
+	m_LFO1.update();
 }
 
 /*
@@ -176,9 +204,6 @@ bool NanoSynthProcessor::doControlUpdate(Steinberg::Vst::ProcessData& data)
 			Vst::ParamValue value = 0.0;
 			Vst::ParamID pid = queue->getParameterId();
 
-			#if(LOG_MIDI && _DEBUG)
-				FDebugPrint("Something changed: pid: %d\n", pid);
-			#endif
 			//	this is the same as userInterfaceChange(); these only are updated if a change has 
 			//	occurred (a control got moved)
 			//
@@ -196,6 +221,32 @@ bool NanoSynthProcessor::doControlUpdate(Steinberg::Vst::ProcessData& data)
 				paramChange = true;
 
 				switch (pid) {
+					//	GUI control code
+					case OSC_WAVEFORM: {
+						m_uOscWaveform = (UINT)cookVSTGUIVariable(MIN_PITCHED_OSC_WAVEFORM, MAX_PITCHED_OSC_WAVEFORM, value);
+						break;
+					}
+
+					case LFO1_WAVEFORM: {
+						m_uLFO1Waveform = (UINT)cookVSTGUIVariable(MIN_LFO_WAVEFORM, MAX_LFO_WAVEFORM, value);
+						break;
+					}
+
+					case LFO1_RATE: {
+						m_dLFO1Rate = cookVSTGUIVariable(MIN_LFO_RATE, MAX_LFO_RATE, value);
+						break;
+					}
+
+					case LFO1_AMPLITUDE: {
+						m_dLFO1Amplitude = cookVSTGUIVariable(MIN_UNIPOLAR, MAX_UNIPOLAR, value);
+						break;
+					}
+
+					case LFO1_MODE: {
+						m_uLFO1Mode = cookVSTGUIVariable(MIN_LFO_MODE, MAX_LFO_MODE, value);
+						break;
+					}
+
 					//	MIDI messages
 					//	want -1 to +1
 					case MIDI_PITCHBEND: {
@@ -266,6 +317,11 @@ bool NanoSynthProcessor::doControlUpdate(Steinberg::Vst::ProcessData& data)
 		}
 	}
 
+	//	check and update
+	if (paramChange) {
+		update();
+	}
+
 	return paramChange;
 }
 
@@ -299,6 +355,16 @@ bool NanoSynthProcessor::doProcessEvent(Vst::Event& vstEvent)
 				FDebugPrint("Note ON: Channel: %d, Note: %d, Velocity: %d\n", uMIDIChannel, uMIDINote, uMIDIVelocity);
 			#endif
 
+			m_Osc1.m_dOscFo = midiFreqTable[uMIDINote];
+			m_Osc1.update();
+
+			m_Osc2.m_dOscFo = midiFreqTable[uMIDINote];
+			m_Osc2.update();
+
+			m_Osc1.startOscillator();
+			m_Osc2.startOscillator();
+			m_LFO1.startOscillator();
+
 			break;
 		}
 
@@ -327,12 +393,14 @@ bool NanoSynthProcessor::doProcessEvent(Vst::Event& vstEvent)
 				FDebugPrint("Note OFF: Channel: %d, Note: %d, Velocity: %d\n", uMIDIChannel, uMIDINote, uMIDIVelocity);
 			#endif
 
+			m_Osc1.stopOscillator();
+			m_Osc2.stopOscillator();
+			m_LFO1.stopOscillator();
 			break;
 		}
 
 		//	polyphonic aftertouch 0xAn
-		case Vst::Event::kPolyPressureEvent:
-		{
+		case Vst::Event::kPolyPressureEvent: {
 			//	get the channel
 			UINT uMIDIChannel = (UINT)vstEvent.polyPressure.channel;
 			UINT uMIDINote = (UINT)vstEvent.polyPressure.pitch;
@@ -360,6 +428,13 @@ bool NanoSynthProcessor::doProcessEvent(Vst::Event& vstEvent)
 
 
 //------------------------------------------------------------------------
+/*
+	Processor::process()
+	The most important function handles:
+		Control Changes
+		Synth voice rendering
+		Output GUI Changes (allows you to write back to the GUI)
+*/
 tresult PLUGIN_API NanoSynthProcessor::process (Vst::ProcessData& data)
 {
 	//	check for presence of output buffers
@@ -380,14 +455,14 @@ tresult PLUGIN_API NanoSynthProcessor::process (Vst::ProcessData& data)
 		//	32-bit is float
 		//	if doing a 64-bit version, it is replaced with double*
 		//	initialize audio output buffers
-		double* buffers[OUTPUT_CHANNELS]; //	Precision is float - need to change this do DOUBLE if supporting 64 bit
+		float* buffers[OUTPUT_CHANNELS]; //	Precision is float - need to change this do DOUBLE if supporting 64 bit
 
 		//	32-bit is float
 		//	if doing a 64-bit version, it is replaced with double* here too
 		for (int i = 0; i < OUTPUT_CHANNELS; i++) {
 			//	data.outputs[0] = BUS 0
-			buffers[i] = (double*)data.outputs[0].channelBuffers32[i];
-			memset(buffers[i], 0, data.numSamples * sizeof(double));
+			buffers[i] = (float*)data.outputs[0].channelBuffers32[i];
+			memset(buffers[i], 0, data.numSamples * sizeof(float));
 		}
 
 		//	total number of samples in the input Buffer
@@ -439,11 +514,36 @@ tresult PLUGIN_API NanoSynthProcessor::process (Vst::ProcessData& data)
 				}
 			}
 
+			//	output "accumulator"
+			double dOut = 0.0;
+
 			//	the loop - samplesToProcess is more like framesToProcess
 			for (int32 j = 0; j < samplesToProcess; j++) {
-				//	just clear buffers
-				buffers[0][j] = 0.0;	// left
-				buffers[1][j] = 0.0;	// right
+				dOut = 0.0;
+
+				if (m_Osc1.m_bNoteOn) {
+					//	ARTICULATION BLOCK
+					//	This is a mono synth so it's only necessary to 
+					//	calculate one output per sample period
+					//
+					//	render LFO output
+					double dLFO1Out = m_LFO1.doOscillate();
+
+					//	apply to the Exp modulation inputs
+					m_Osc1.setFoModExp(dLFO1Out * OSC_FO_MOD_RANGE);
+					m_Osc2.setFoModExp(dLFO1Out * OSC_FO_MOD_RANGE);
+
+					//	update 
+					m_Osc1.update();
+					m_Osc2.update();
+
+					//	DIGITAL AUDIO ENGINE BLOCK
+					dOut = 0.5 * m_Osc1.doOscillate() + 0.5 * m_Osc2.doOscillate();
+				}
+
+				//	write to buffers
+				buffers[0][j] = dOut;	// left
+				buffers[1][j] = dOut;	// right
 			}
 
 			//	update the counter
@@ -455,14 +555,14 @@ tresult PLUGIN_API NanoSynthProcessor::process (Vst::ProcessData& data)
 			numSamples -= samplesToProcess;
 			samplesProcessed += samplesToProcess;
 
-		} // end while (numSamples > 0)
+		} //	end while (numSamples > 0)
 	}
 
-	// can write OUT to the GUI like this:
+	//	can write OUT to the GUI like this:
 	if (data.outputParameterChanges) {
 
 	}
-	// --- set silence flags if no notes playing
+	//	set silence flags if no notes playing
 	if (data.numOutputs > 0) {
 		data.outputs[0].silenceFlags = 0x11; // left and right channel are silent
 	}
@@ -485,7 +585,7 @@ tresult PLUGIN_API NanoSynthProcessor::setupProcessing (Vst::ProcessSetup& newSe
 tresult PLUGIN_API NanoSynthProcessor::canProcessSampleSize (int32 symbolicSampleSize)
 {
 	// by default kSample32 is supported
-	if (symbolicSampleSize == Vst::kSample32 || symbolicSampleSize == Vst::kSample64) {
+	if (symbolicSampleSize == Vst::kSample32) {
 		return kResultTrue;
 	}
 	// disable the following comment if your processing support kSample64
@@ -506,20 +606,44 @@ tresult PLUGIN_API NanoSynthProcessor::canProcessSampleSize (int32 symbolicSampl
 */
 tresult PLUGIN_API NanoSynthProcessor::setState (IBStream* state)
 {
-	// called when we load a preset, the model has to be reloaded
+	//	called when we load a preset, the model has to be reloaded
 	IBStreamer streamer (state, kLittleEndian);
 	uint64 version = 0;
 
-	// --- needed to convert to our UINT reads
+	//	needed to convert to UINT reads
 	uint32 udata = 0;
 	int32 data = 0;
 
-	// --- read the version
+	//	read the version
 	if (!streamer.readInt64u(version)) {
 		return kResultFalse;
 	}
 
-	// --- do next version...
+	//	read the current GUI parameters
+	//  NOTE: the reading and writting must happen in the same order
+	if (!streamer.readInt32u(udata)) {
+		return kResultFalse;
+	} else {
+		m_uOscWaveform = udata;
+	}
+	if (!streamer.readInt32u(udata)) {
+		return kResultFalse;
+	} else {
+		m_uLFO1Waveform = udata;
+	}
+	if (!streamer.readDouble(m_dLFO1Rate)) {
+		return kResultFalse;
+	}
+	if (!streamer.readDouble(m_dLFO1Amplitude)) {
+		return kResultFalse;
+	}
+	if (!streamer.readInt32u(udata)) {
+		return kResultFalse;
+	} else {
+		m_uLFO1Mode = udata;
+	}
+
+	//	do next version...
 	if (version >= 1)
 	{
 		// add v1 stuff here
@@ -531,7 +655,7 @@ tresult PLUGIN_API NanoSynthProcessor::setState (IBStream* state)
 //------------------------------------------------------------------------
 /*
 	Processor::getState()
-	This is the WRITE part of the serialization process. We get the stream interface and use it
+	This is the WRITE part of the serialization process. It gets the stream interface and uses it
 	to write to the filestream. This is important because it is how the Factory Default is set
 	at startup, as well as when writing presets.
 */
@@ -545,6 +669,23 @@ tresult PLUGIN_API NanoSynthProcessor::getState (IBStream* state)
 		return kResultFalse;
 	}
 
+	//	save the current GUI control variables
+	if (!streamer.writeInt32u(m_uOscWaveform)) {
+		return kResultFalse;
+	}
+	if (!streamer.writeInt32u(m_uLFO1Waveform)) {
+		return kResultFalse;
+	}
+	if (!streamer.writeDouble(m_dLFO1Rate)) {
+		return kResultFalse;
+	}
+	if (!streamer.writeDouble(m_dLFO1Amplitude)) {
+		return kResultFalse;
+	}
+	if (!streamer.writeInt32u(m_uLFO1Mode)) {
+		return kResultFalse;
+	}
+
 	return kResultOk;
 }
 
@@ -555,9 +696,8 @@ tresult PLUGIN_API NanoSynthProcessor::getState (IBStream* state)
 tresult PLUGIN_API NanoSynthProcessor::setBusArrangements(Vst::SpeakerArrangement* inputs, int32 numIns,
 	Vst::SpeakerArrangement* outputs, int32 numOuts)
 {
-	// we only support one stereo output bus
-	if (numIns == 0 && numOuts == 1 && outputs[0] == Steinberg::Vst::SpeakerArr::kStereo)
-	{
+	//	only support one stereo output bus
+	if (numIns == 0 && numOuts == 1 && outputs[0] == Steinberg::Vst::SpeakerArr::kStereo)	{
 		return AudioEffect::setBusArrangements(inputs, numIns, outputs, numOuts);
 	}
 	return kResultFalse;

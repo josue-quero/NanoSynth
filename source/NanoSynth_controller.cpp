@@ -46,6 +46,48 @@ tresult PLUGIN_API NanoSynthController::initialize (FUnknown* context)
 		//	Init parameters
 		Vst::Parameter* param;
 
+		Vst::StringListParameter* enumStringParam = new Vst::StringListParameter(USTRING("Osc Waveform"), OSC_WAVEFORM);
+		//	types of waveforms for the osc (controls)
+		//	NOTE: these must be in the same order as in the enum for the project
+		enumStringParam->appendString(USTRING("SINE"));
+		enumStringParam->appendString(USTRING("SAW1"));
+		enumStringParam->appendString(USTRING("SAW2"));
+		enumStringParam->appendString(USTRING("SAW3"));
+		enumStringParam->appendString(USTRING("TRI"));
+		enumStringParam->appendString(USTRING("SQUARE"));
+		enumStringParam->appendString(USTRING("NOISE"));
+		enumStringParam->appendString(USTRING("PNOISE"));
+		parameters.addParameter(enumStringParam);
+
+		enumStringParam = new Vst::StringListParameter(USTRING("LFO Waveform"), LFO1_WAVEFORM);
+		//	types of waveforms for the LFO (controls)
+		enumStringParam->appendString(USTRING("sine"));
+		enumStringParam->appendString(USTRING("usaw"));
+		enumStringParam->appendString(USTRING("dsaw"));
+		enumStringParam->appendString(USTRING("tri"));
+		enumStringParam->appendString(USTRING("square"));
+		enumStringParam->appendString(USTRING("expo"));
+		enumStringParam->appendString(USTRING("rsh"));
+		enumStringParam->appendString(USTRING("qrsh"));
+		parameters.addParameter(enumStringParam);
+
+		param = new Vst::RangeParameter(USTRING("LFO1 Rate"), LFO1_RATE, USTRING("Hz"),
+			MIN_LFO_RATE, MAX_LFO_RATE, DEFAULT_LFO_RATE);
+		param->setPrecision(2); // fractional sig digits
+		parameters.addParameter(param);
+
+		param = new Vst::RangeParameter(USTRING("LFO1 Amplitude"), LFO1_AMPLITUDE, USTRING(""),
+			MIN_UNIPOLAR, MAX_UNIPOLAR, DEFAULT_UNIPOLAR);
+		param->setPrecision(1); // fractional sig digits
+		parameters.addParameter(param);
+
+		enumStringParam = new Vst::StringListParameter(USTRING("LFO1 Mode"), LFO1_MODE);
+		// now add the strings for the list IN THE SAME ORDER AS DECLARED IN THE enum in Synth Project
+		enumStringParam->appendString(USTRING("sync"));
+		enumStringParam->appendString(USTRING("shot"));
+		enumStringParam->appendString(USTRING("free"));
+		parameters.addParameter(enumStringParam);
+
 		// MIDI Params - these have no knobs in main GUI but do have to appear in default
 		// NOTE: this is for VST3 ONLY!
 		param = new Vst::RangeParameter(USTRING("PitchBend"), MIDI_PITCHBEND, USTRING(""),
@@ -157,6 +199,34 @@ tresult PLUGIN_API NanoSynthController::setComponentState (IBStream* state)
 		return kResultFalse;
 	}
 
+	//	reading the controlers values
+	// NOTE: reading and writting order must be the same
+	if (!stream.readInt32u(udata)) {
+		return kResultFalse;
+	} else {
+		setParamNormalizedFromFile(OSC_WAVEFORM, (Vst::ParamValue)udata);
+	}
+	if (!stream.readInt32u(udata)) {
+		return kResultFalse;
+	} else {
+		setParamNormalizedFromFile(LFO1_WAVEFORM, (Vst::ParamValue)udata);
+	}
+	if (!stream.readDouble(dDoubleParam)) {
+		return kResultFalse;
+	} else {
+		setParamNormalizedFromFile(LFO1_RATE, dDoubleParam);
+	}
+	if (!stream.readDouble(dDoubleParam)) {
+		return kResultFalse;
+	} else {
+		setParamNormalizedFromFile(LFO1_AMPLITUDE, dDoubleParam);
+	}
+	if (!stream.readInt32u(udata)) {
+		return kResultFalse;
+	} else {
+		setParamNormalizedFromFile(LFO1_MODE, (Vst::ParamValue)udata);
+	}
+
 	//	do next version...
 	if (version >= 1) {
 		//	add v1 stuff here
@@ -188,9 +258,9 @@ tresult PLUGIN_API NanoSynthController::getState (IBStream* state)
 	The client queries this 129 times for 130 possible control messages, see ivstsmidicontrollers.h for
 	the VST defines for kPitchBend, kCtrlModWheel, etc... for each MIDI Channel in our Event Bus
 
-	We respond with our ControlID value that we'll use to process the MIDI Messages in Processor::process().
+	It responds with the ControlID value that is used to process the MIDI Messages in Processor::process().
 
-	On the default GUI, these controls will actually move with the MIDI messages, but we don't want that on
+	On the default GUI, these controls will actually move with the MIDI messages, but it's not what I want on
 	the final UI so that we can have any Modulation Matrix mapping we want.
 */
 tresult PLUGIN_API NanoSynthController::getMidiControllerAssignment(int32 busIndex, int16 channel, Vst::CtrlNumber midiControllerNumber, Vst::ParamID& id/*out*/)
@@ -226,12 +296,12 @@ tresult PLUGIN_API NanoSynthController::getMidiControllerAssignment(int32 busInd
 			id = MIDI_ALL_NOTES_OFF;
 			break;
 		}
-		if (id >= 0)
-		{
-			return kResultOk;
-		}
-		else
+		if (id == -1) {
+			id = 0;
 			return kResultFalse;
+		} else {
+			return kResultTrue;
+		}
 
 	}
 

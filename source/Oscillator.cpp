@@ -8,14 +8,11 @@ Oscillator::Oscillator(void) {
 	m_uMIDINoteNumber = 0;
 	m_dModulo = 0.0;
 	m_dInc = 0.0;
-	
+	m_dOscFo = OSC_FO_DEFAULT; //	GUI
 	m_dAmplitude = 1.0; //	default ON
-
-	// Repeated variables one for GUI control and the other for modulation
 	m_dPulseWidth = OSC_PULSEWIDTH_DEFAULT;
 	m_dPulseWidthControl = OSC_PULSEWIDTH_DEFAULT; //	GUI
 	m_dFo = OSC_FO_DEFAULT;
-	m_dOscFo = OSC_FO_DEFAULT; //	GUI
 
 	//	seed the random number generator for noise oscillators
 	srand(time(NULL));

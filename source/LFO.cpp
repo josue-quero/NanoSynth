@@ -2,19 +2,19 @@
 
 //	Initialize the LFO mode variable to sync
 //	(waveform is initialized as sine)
-CLFO::CLFO(void) {
+LFO::LFO(void) {
 	m_uLFOMode = sync;
 }
 
-CLFO::~CLFO(void) {
+LFO::~LFO(void) {
 }
 
 //	call tghe base class for reset
-void CLFO::reset() {
+void LFO::reset() {
 	Oscillator::reset();
 }
 
-void CLFO::startOscillator() {
+void LFO::startOscillator() {
 	//	if not in free run mode (one shot or sync'd LFO) then reset 
 	if (m_uLFOMode == sync || m_uLFOMode == shot)
 		reset();
@@ -24,7 +24,7 @@ void CLFO::startOscillator() {
 }
 
 //	clears flag
-void CLFO::stopOscillator() {
+void LFO::stopOscillator() {
 	m_bNoteOn = false;
 }
 
