@@ -442,7 +442,7 @@ tresult PLUGIN_API NanoSynthProcessor::process (Vst::ProcessData& data)
 		return kResultOk;
 	}
 
-	//	check for conrol chages and update synth if needed
+	//	check for control chages and update synth if needed
 	doControlUpdate(data);
 
 	//	flush mode
