@@ -19,6 +19,9 @@ https://user-images.githubusercontent.com/63129349/191155832-f72514d1-3e17-4fcb-
 https://user-images.githubusercontent.com/63129349/191155891-955afe86-8363-4e45-88d7-a796d7d7b483.mp4
 
 
+NOTE: For better audio quality check out this link: (https://soundcloud.com/oshiahu/sets/nanosynth-test-audios?si=5b02c12957cd42a385fc7ed86b1a6afe&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing)
+
+
 ### GUI
 
 The NanoSynth comes with a basic integrated Graphic User Interface that allows the user to select the Oscillator that he will use for generating the sound, the Low Frecquency Oscillator (LFO) that will modulate the previous one, an Amplitude and a Rate Knob controller and lastly, a mode selector for the LFO. All this was done with the VSTGUI Editor Toolkit, more info available at: (https://steinbergmedia.github.io/vst3_doc/vstgui/html/index.html)
