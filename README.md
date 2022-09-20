@@ -10,7 +10,14 @@ A synthesizer is an electronic musical instrument that generates audio signals. 
 
 ### Audio example
 
-These are examples of the sounds that NanoSynth can generate. 
+These are examples of the sounds that NanoSynth can generate.
+
+
+https://user-images.githubusercontent.com/63129349/191155832-f72514d1-3e17-4fcb-8d2f-2ce2632bb92c.mp4
+
+
+https://user-images.githubusercontent.com/63129349/191155891-955afe86-8363-4e45-88d7-a796d7d7b483.mp4
+
 
 ### GUI
 
